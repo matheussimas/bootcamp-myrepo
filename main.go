@@ -1,32 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Pessoa struct {
-	Name string
-	Age  int8
-	Job  string
+	// eu posso ler essa struct como json assim:
+	Name        string `json:"Nome"`
+	Age         int8   `json:"Idade"`
+	Job         string `json:"Prof"`
+	Preferencia Preferencia
 }
 
-func printPessoa(pessoa Pessoa) {
-	fmt.Println("Nome: ", pessoa.Name)
-	fmt.Println("Idade: ", pessoa.Age)
-	fmt.Println("Prof: ", pessoa.Job)
-	fmt.Println("______________________")
+type Preferencia struct {
+	Comida string `json:"Comida"`
+}
+
+func printPessoaJson(pessoaJson string, err error) {
+	fmt.Println(pessoaJson, err)
 }
 
 func main() {
-	matheus := Pessoa{
-		Name: "Matheus",
-		Age:  28,
-		Job:  "Desenvolvedor",
-	}
+	matheus := Pessoa{"Matheus", 28, "Dev", Preferencia{"Macarrão"}}
+	meuJson, err := json.Marshal(matheus)
+	// para conseguir imprimir o json, preciso transformar em string
+	meuJsonString := string(meuJson)
 
-	var maria Pessoa
+	printPessoaJson(meuJsonString, err)
 
-	maria.Name = "Maria"
-	maria.Age = 8
-
-	printPessoa(matheus)
-	printPessoa(maria)
 }
