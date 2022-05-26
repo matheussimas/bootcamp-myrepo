@@ -1,25 +1,47 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"math"
 )
 
-type Circulo struct {
-	raio float64
+type conn struct {
+	rd    string
+	close func()
 }
 
-func (c *Circulo) Area() float64 {
-	return math.Pi * c.raio * c.raio
+func redis(user string, password string) (conn, error) {
+	if user == "" {
+		return conn{}, errors.New("usuário vazio")
+	}
 
+	fmt.Println("abrindo conexao")
+
+	defer func() {
+		fmt.Println("dentro do redis")
+	}()
+
+	return conn{rd: "string_de_conexao", close: func() { fmt.Println("oi") }}, nil
 }
-func (c *Circulo) Diametro() float64 {
-	return 2 * math.Pi * c.raio
+
+func mysql() {
+	fmt.Println("fechando a conexão do mysql...")
+}
+
+func mongo() {
+	fmt.Println("fechando a conexão do mongo...")
 }
 
 func main() {
-	valorRaio := 5
-	calculaArea := Circulo{raio: float64(valorRaio)}
+	connRedis, err := redis("user", "password")
+	if err != nil {
+		panic(err)
+	}
 
-	fmt.Println(calculaArea.Area())
+	fmt.Println(connRedis)
+
+	defer connRedis.close()
+
+	defer mysql()
+	defer mongo()
 }
