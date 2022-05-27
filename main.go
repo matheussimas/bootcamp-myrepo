@@ -1,18 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-// eu consigo criar varias interfaces dentro de uma struct, e subdividr ainda mais criando um array de interfaces
-type ListaDeFuncs struct {
-	Data []interface{}
+func sayHello(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "Hello!",
+	})
 }
 
 func main() {
-	l := ListaDeFuncs{}
-	l.Data = append(l.Data, 1)
-	l.Data = append(l.Data, "oi!")
-	l.Data = append(l.Data, false)
+	router := gin.Default()
 
-	fmt.Println(l.Data)
-
+	router.GET("/", sayHello)
+	router.Run()
 }
