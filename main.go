@@ -3,14 +3,14 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Usuario struct {
-	Id          int       `json:"id"`
+type User struct {
+	Id          int64     `json:"id"`
 	Nome        string    `json:"nome"`
 	Sobrenome   string    `json:"sobrenome"`
 	Email       string    `json:"email"`
@@ -20,19 +20,35 @@ type Usuario struct {
 	DataCriacao time.Time `json:"data_criacao"`
 }
 
-func writeJsonFile(c *gin.Context) {
-	file, _ := json.MarshalIndent(c, "", " ")
-	err := ioutil.WriteFile("/go-web/user.json", file, 0644)
+type Users []User
 
-	if err != nil {
-		log.Fatal(err)
-	}
+var lastID int64
+var users Users
 
+func listUsers(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"data": &users})
 }
 
-func hello(c *gin.Context) {
+func saveUser(c *gin.Context) {
+	var user User
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	lastID++
+	user.Id = lastID
+
+	users = append(users, user)
+
+	file, _ := json.MarshalIndent(user, "", " ")
+	_ = ioutil.WriteFile("usuarios.json", file, 0644)
+
 	c.JSON(200, gin.H{
-		"message": "deuboa",
+		"data": &users,
 	})
 }
 
@@ -40,7 +56,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/", hello)
-	router.POST("/", writeJsonFile)
+	router.GET("/", listUsers)
+	router.POST("/", saveUser)
 	router.Run()
 }
