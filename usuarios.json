@@ -1,0 +1,22 @@
+[
+{
+"id": 1,
+"nome": "aaaaaaa",
+"sobrenome": "aaa",
+"email": "aaa",
+"idade": 99,
+"altura": 1.77,
+"ativo": true,
+"data_criacao": "0001-01-01T00:00:00Z"
+},
+{
+"id": 2,
+"nome": "b",
+"sobrenome": "b",
+"email": "lll",
+"idade": 99,
+"altura": 1.77,
+"ativo": true,
+"data_criacao": "0001-01-01T00:00:00Z"
+}
+]

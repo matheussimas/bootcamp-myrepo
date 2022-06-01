@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -20,10 +21,8 @@ type User struct {
 	DataCriacao time.Time `json:"data_criacao"`
 }
 
-type Users []User
-
 var lastID int64
-var users Users
+var users []User
 
 func listUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": &users})
@@ -44,8 +43,14 @@ func saveUser(c *gin.Context) {
 
 	users = append(users, user)
 
-	file, _ := json.MarshalIndent(user, "", " ")
+	fmt.Println("Sem ponteiro: \n", users)
+	fmt.Println("   ")
+	fmt.Println("Com ponteiro: \n", &users)
+
+	file, _ := json.MarshalIndent(&users, "", "")
 	_ = ioutil.WriteFile("usuarios.json", file, 0644)
+
+	fmt.Println("File:", file)
 
 	c.JSON(200, gin.H{
 		"data": &users,
